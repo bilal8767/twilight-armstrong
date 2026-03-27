@@ -23,8 +23,6 @@ console.log('CLOUDINARY_CLOUD_NAME exists:', !!process.env.CLOUDINARY_CLOUD_NAME
 console.log('CLOUDINARY_API_KEY exists:', !!process.env.CLOUDINARY_API_KEY);
 console.log('CLOUDINARY_API_SECRET exists:', !!process.env.CLOUDINARY_API_SECRET);
 
-const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
-
 async function startServer() {
     try {
         if (!mongoUri) {
