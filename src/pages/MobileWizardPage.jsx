@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Signal, Wifi, Battery, ChevronDown, MapPin, Home, User, Building, Upload, FileText, Check, ChevronLeft, Search, PlusSquare, Heart } from 'lucide-react';
+import { Signal, Wifi, Battery, ChevronDown, Home, User, Upload, FileText, Check, ChevronLeft, Search, PlusSquare } from 'lucide-react';
 
 const translations = {
-    // ... exactly the same translation object
     en: {
         step: "Step",
         of: "of",
@@ -63,23 +62,34 @@ const translations = {
     }
 };
 
+const API_BASE_URL = 'https://twilight-armstrong.onrender.com';
+
 const MobileWizardPage = () => {
     const [step, setStep] = useState(2);
     const [lang, setLang] = useState('de');
     const t = translations[lang];
 
     const [formData, setFormData] = useState({
-        name: '', address: '', propertyDetails: '', property: ''
+        name: '',
+        address: '',
+        propertyDetails: '',
+        property: ''
     });
+
     const [files, setFiles] = useState({
-        energie: null, heizung: null
+        energie: null,
+        heizung: null
     });
+
     const [submitting, setSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
     const handleNext = () => setStep(3);
-    const handleFileChange = (key, file) => setFiles({ ...files, [key]: file });
+
+    const handleFileChange = (key, file) => {
+        setFiles({ ...files, [key]: file });
+    };
 
     const handleSubmit = async () => {
         setSubmitting(true);
@@ -91,18 +101,25 @@ const MobileWizardPage = () => {
         submitData.append('address', formData.address);
         submitData.append('propertyDetails', formData.propertyDetails);
         submitData.append('property', formData.property);
+
         if (files.energie) submitData.append('energie', files.energie);
         if (files.heizung) submitData.append('heizung', files.heizung);
 
         try {
-            const response = await fetch('/api/submissions', {
-                method: 'POST', body: submitData,
+            const response = await fetch(`${API_BASE_URL}/api/submissions`, {
+                method: 'POST',
+                body: submitData,
             });
-            if (!response.ok) throw new Error('Server error');
+
+            if (!response.ok) {
+                throw new Error('Server error');
+            }
+
             await response.json();
             setSuccessMessage(t.successMsg);
             setStep(4);
         } catch (error) {
+            console.error('Submission failed:', error);
             setErrorMessage(t.errorMsg);
         } finally {
             setSubmitting(false);
@@ -111,10 +128,8 @@ const MobileWizardPage = () => {
 
     return (
         <div className="min-h-screen flex justify-center items-center p-4 font-sans relative overflow-hidden bg-zinc-100">
-            {/* Mobile Frame - Clean Instagram Look */}
             <div className="w-full max-w-[375px] bg-white shadow-xl overflow-hidden border border-gray-200 relative min-h-[812px] z-10 flex flex-col items-center">
 
-                {/* Status Bar */}
                 <div className="h-[44px] w-full flex justify-between items-end px-5 pb-2 text-black shrink-0 bg-white z-20">
                     <span className="font-semibold text-[15px]">9:41</span>
                     <div className="flex items-center gap-1.5">
@@ -124,15 +139,19 @@ const MobileWizardPage = () => {
                     </div>
                 </div>
 
-                {/* Instagram Header */}
                 <div className="w-full h-[44px] flex items-center justify-between px-4 shrink-0 bg-white border-b border-gray-200 relative z-10">
-                    <button className="p-1 hover:bg-gray-50 rounded-full" onClick={() => step > 2 ? setStep(step - 1) : null}>
+                    <button
+                        className="p-1 hover:bg-gray-50 rounded-full"
+                        onClick={() => step > 2 ? setStep(step - 1) : null}
+                    >
                         <ChevronLeft size={28} className="text-black" />
                     </button>
+
                     <h1 className="text-[16px] font-semibold text-black tracking-tight">
                         {step < 4 ? `${t.step} ${step} ${t.of} 5` : t.success}
                     </h1>
-                    <button 
+
+                    <button
                         onClick={() => setLang(lang === 'de' ? 'en' : 'de')}
                         className="text-[14px] font-bold text-black"
                     >
@@ -140,18 +159,19 @@ const MobileWizardPage = () => {
                     </button>
                 </div>
 
-                {/* Content Area */}
                 <div className="flex-1 overflow-y-auto px-4 w-full bg-white relative pb-20">
-                    
+
                     {step === 2 ? (
                         <div className="animate-fade-in-up mt-6">
-                            <h2 className="text-center text-[24px] mb-6 font-medium text-black tracking-tight">{t.customerData}</h2>
-                            
+                            <h2 className="text-center text-[24px] mb-6 font-medium text-black tracking-tight">
+                                {t.customerData}
+                            </h2>
+
                             <div className="space-y-4">
-                                <InstagramInput 
-                                    placeholder={t.namePlaceholder} 
-                                    value={formData.name} 
-                                    onChange={(e) => setFormData({...formData, name: e.target.value})} 
+                                <InstagramInput
+                                    placeholder={t.namePlaceholder}
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 />
 
                                 <div className="relative">
@@ -181,10 +201,10 @@ const MobileWizardPage = () => {
                                     <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" size={16} />
                                 </div>
 
-                                <InstagramInput 
-                                    placeholder={t.propertyPlaceholder} 
-                                    value={formData.property} 
-                                    onChange={(e) => setFormData({...formData, property: e.target.value})} 
+                                <InstagramInput
+                                    placeholder={t.propertyPlaceholder}
+                                    value={formData.property}
+                                    onChange={(e) => setFormData({ ...formData, property: e.target.value })}
                                 />
                             </div>
 
@@ -199,17 +219,31 @@ const MobileWizardPage = () => {
                         </div>
                     ) : step === 3 ? (
                         <div className="animate-fade-in-up mt-6">
-                            <h2 className="text-center text-[24px] mb-6 font-medium text-black tracking-tight">{t.documents}</h2>
+                            <h2 className="text-center text-[24px] mb-6 font-medium text-black tracking-tight">
+                                {t.documents}
+                            </h2>
 
                             <div className="space-y-4">
-                                <InstagramUpload label={t.energyCert} emptyText={t.noFileChosen} value={files.energie} onChange={(f) => handleFileChange('energie', f)} />
-                                <InstagramUpload label={t.heatingContractor} emptyText={t.noFileChosen} value={files.heizung} onChange={(f) => handleFileChange('heizung', f)} />
+                                <InstagramUpload
+                                    label={t.energyCert}
+                                    emptyText={t.noFileChosen}
+                                    value={files.energie}
+                                    onChange={(f) => handleFileChange('energie', f)}
+                                />
+                                <InstagramUpload
+                                    label={t.heatingContractor}
+                                    emptyText={t.noFileChosen}
+                                    value={files.heizung}
+                                    onChange={(f) => handleFileChange('heizung', f)}
+                                />
                             </div>
 
                             <div className="mt-8">
-                                {errorMessage && <div className="text-red-500 text-sm text-center mb-4">{errorMessage}</div>}
-                                
-                                <button 
+                                {errorMessage && (
+                                    <div className="text-red-500 text-sm text-center mb-4">{errorMessage}</div>
+                                )}
+
+                                <button
                                     onClick={handleSubmit}
                                     disabled={submitting}
                                     className={`w-full bg-[#0095F6] hover:bg-[#1877F2] text-white font-semibold text-[14px] py-3.5 rounded-[8px] transition-colors ${submitting ? 'opacity-70' : ''}`}
@@ -223,14 +257,23 @@ const MobileWizardPage = () => {
                             <div className="w-24 h-24 rounded-full border-[3px] border-[#0095F6] flex justify-center items-center mb-6">
                                 <Check size={50} className="text-[#0095F6]" />
                             </div>
+
                             <h2 className="text-[22px] font-semibold text-black mb-2">{t.success}</h2>
                             <p className="text-[14px] text-gray-500 mb-8">{successMessage || t.successMsg}</p>
-                            
-                            <button 
+
+                            <button
                                 onClick={() => {
                                     setStep(2);
-                                    setFormData({name: '', address: '', propertyDetails: '', property: ''});
-                                    setFiles({energie: null, heizung: null});
+                                    setFormData({
+                                        name: '',
+                                        address: '',
+                                        propertyDetails: '',
+                                        property: ''
+                                    });
+                                    setFiles({
+                                        energie: null,
+                                        heizung: null
+                                    });
                                 }}
                                 className="text-[#0095F6] font-semibold text-[14px]"
                             >
@@ -240,7 +283,6 @@ const MobileWizardPage = () => {
                     )}
                 </div>
 
-                {/* Bottom Navigation Bar */}
                 <div className="h-[50px] w-full flex justify-around items-center bg-white border-t border-gray-200 shrink-0 absolute bottom-0 z-20 pb-safe">
                     <Home size={26} className="text-black" />
                     <Search size={26} className="text-black" />
@@ -250,7 +292,6 @@ const MobileWizardPage = () => {
                         <User size={18} className="text-gray-400" />
                     </div>
                 </div>
-
             </div>
         </div>
     );
@@ -269,16 +310,20 @@ const InstagramInput = ({ placeholder, value, onChange }) => (
 const InstagramUpload = ({ label, emptyText, value, onChange }) => (
     <div className="bg-[#FAFAFA] border border-gray-300 rounded-[4px] p-4 flex flex-col gap-2 relative">
         <span className="text-[14px] font-semibold text-black">{label}</span>
+
         <div className="flex items-center gap-2">
-            <span className="text-[13px] text-gray-500 truncate">{value ? value.name : emptyText}</span>
+            <span className="text-[13px] text-gray-500 truncate">
+                {value ? value.name : emptyText}
+            </span>
         </div>
-        
+
         <input
             type="file"
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
             onChange={(e) => onChange(e.target.files[0])}
         />
-        <div className={`absolute top-4 right-4 text-[#0095F6]`}>
+
+        <div className="absolute top-4 right-4 text-[#0095F6]">
             {value ? <Check size={20} /> : <FileText size={20} />}
         </div>
     </div>
