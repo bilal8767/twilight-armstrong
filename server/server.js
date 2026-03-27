@@ -15,9 +15,18 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log('Connected to MongoDB Atlas'))
-    .catch(err => console.error('MongoDB connection error:', err));
+const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
+
+console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
+console.log('MONGO_URI exists:', !!process.env.MONGO_URI);
+
+if (!mongoUri) {
+    console.error('MongoDB URI is missing. Please set MONGODB_URI or MONGO_URI.');
+} else {
+    mongoose.connect(mongoUri)
+        .then(() => console.log('Connected to MongoDB Atlas'))
+        .catch(err => console.error('MongoDB connection error:', err));
+}
 
 // Mongoose Schema
 const submissionSchema = new mongoose.Schema({
@@ -56,9 +65,8 @@ app.post('/api/submissions', upload.fields([
     try {
         const { name, address, propertyDetails, property } = req.body;
 
-        // Get Cloudinary URLs if files were uploaded
-        const energiePath = req.files['energie'] ? req.files['energie'][0].path : null;
-        const heizungPath = req.files['heizung'] ? req.files['heizung'][0].path : null;
+        const energiePath = req.files?.energie ? req.files.energie[0].path : null;
+        const heizungPath = req.files?.heizung ? req.files.heizung[0].path : null;
 
         const newSubmission = new Submission({
             name,
@@ -71,13 +79,13 @@ app.post('/api/submissions', upload.fields([
 
         const saved = await newSubmission.save();
         res.status(201).json({
-            message: "Submission saved successfully to MongoDB & Cloudinary!",
+            message: 'Submission saved successfully to MongoDB & Cloudinary!',
             submissionId: saved._id
         });
 
     } catch (error) {
-        console.error("Submission error:", error);
-        res.status(500).json({ error: "An unexpected error occurred." });
+        console.error('Submission error:', error);
+        res.status(500).json({ error: 'An unexpected error occurred.' });
     }
 });
 
@@ -87,18 +95,15 @@ app.get('/api/submissions', async (req, res) => {
         const submissions = await Submission.find().sort({ timestamp: -1 });
         res.status(200).json(submissions);
     } catch (error) {
-        console.error("Database fetch error:", error);
-        res.status(500).json({ error: "Failed to fetch submissions from database." });
+        console.error('Database fetch error:', error);
+        res.status(500).json({ error: 'Failed to fetch submissions from database.' });
     }
 });
 
-// Serve frontend static files
-// app.use(express.static(path.join(__dirname, '../dist')));
-
-// Catch-all route to serve the React frontend for any non-API requests
-// app.get('/{*splat}', (req, res) => {
-//    res.sendFile(path.join(__dirname, '../dist/index.html'));
-// });
+// Test route
+app.get('/', (req, res) => {
+    res.send('Backend is running');
+});
 
 // Start server
 app.listen(PORT, () => {
