@@ -93,12 +93,12 @@ app.get('/api/submissions', async (req, res) => {
 });
 
 // Serve frontend static files
-app.use(express.static(path.join(__dirname, '../dist')));
+// app.use(express.static(path.join(__dirname, '../dist')));
 
 // Catch-all route to serve the React frontend for any non-API requests
-app.get('/{*splat}', (req, res) => {
-    res.sendFile(path.join(__dirname, '../dist/index.html'));
-});
+// app.get('/{*splat}', (req, res) => {
+//    res.sendFile(path.join(__dirname, '../dist/index.html'));
+// });
 
 // Start server
 app.listen(PORT, () => {
