@@ -19,6 +19,9 @@ const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
 
 console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
 console.log('MONGO_URI exists:', !!process.env.MONGO_URI);
+console.log('CLOUDINARY_CLOUD_NAME exists:', !!process.env.CLOUDINARY_CLOUD_NAME);
+console.log('CLOUDINARY_API_KEY exists:', !!process.env.CLOUDINARY_API_KEY);
+console.log('CLOUDINARY_API_SECRET exists:', !!process.env.CLOUDINARY_API_SECRET);
 
 if (!mongoUri) {
     console.error('MongoDB URI is missing. Please set MONGODB_URI or MONGO_URI.');
@@ -38,6 +41,7 @@ const submissionSchema = new mongoose.Schema({
     heizungsbauerPath: String,
     timestamp: { type: Date, default: Date.now }
 });
+
 const Submission = mongoose.model('Submission', submissionSchema);
 
 // Cloudinary Configuration
@@ -55,7 +59,8 @@ const storage = new CloudinaryStorage({
         allowed_formats: ['jpg', 'png', 'jpeg', 'pdf'],
     },
 });
-const upload = multer({ storage: storage });
+
+const upload = multer({ storage });
 
 // API Route to handle form submission
 app.post('/api/submissions', upload.fields([
@@ -63,6 +68,9 @@ app.post('/api/submissions', upload.fields([
     { name: 'heizung', maxCount: 1 }
 ]), async (req, res) => {
     try {
+        console.log('Incoming submission body:', req.body);
+        console.log('Incoming submission files:', req.files);
+
         const { name, address, propertyDetails, property } = req.body;
 
         const energiePath = req.files?.energie ? req.files.energie[0].path : null;
@@ -78,14 +86,24 @@ app.post('/api/submissions', upload.fields([
         });
 
         const saved = await newSubmission.save();
+
         res.status(201).json({
             message: 'Submission saved successfully to MongoDB & Cloudinary!',
             submissionId: saved._id
         });
 
     } catch (error) {
-        console.error('Submission error:', error);
-        res.status(500).json({ error: 'An unexpected error occurred.' });
+        console.error('Submission error full:', error);
+        console.error('Submission error message:', error.message);
+        console.error('Submission error stack:', error.stack);
+        console.error('Request body:', req.body);
+        console.error('Request files:', req.files);
+
+        res.status(500).json({
+            error: 'Submission failed',
+            message: error.message,
+            stack: error.stack
+        });
     }
 });
 
@@ -96,13 +114,26 @@ app.get('/api/submissions', async (req, res) => {
         res.status(200).json(submissions);
     } catch (error) {
         console.error('Database fetch error:', error);
-        res.status(500).json({ error: 'Failed to fetch submissions from database.' });
+        res.status(500).json({
+            error: 'Failed to fetch submissions from database.',
+            message: error.message
+        });
     }
 });
 
 // Test route
 app.get('/', (req, res) => {
     res.send('Backend is running');
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error('Global server error:', err);
+    res.status(500).json({
+        error: 'Global server error',
+        message: err.message,
+        stack: err.stack
+    });
 });
 
 // Start server
