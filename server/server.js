@@ -16,8 +16,8 @@ app.use(express.json());
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('Connected to MongoDB Atlas'))
-  .catch(err => console.error('MongoDB connection error:', err));
+    .then(() => console.log('Connected to MongoDB Atlas'))
+    .catch(err => console.error('MongoDB connection error:', err));
 
 // Mongoose Schema
 const submissionSchema = new mongoose.Schema({
@@ -55,7 +55,7 @@ app.post('/api/submissions', upload.fields([
 ]), async (req, res) => {
     try {
         const { name, address, propertyDetails, property } = req.body;
-        
+
         // Get Cloudinary URLs if files were uploaded
         const energiePath = req.files['energie'] ? req.files['energie'][0].path : null;
         const heizungPath = req.files['heizung'] ? req.files['heizung'][0].path : null;
@@ -70,9 +70,9 @@ app.post('/api/submissions', upload.fields([
         });
 
         const saved = await newSubmission.save();
-        res.status(201).json({ 
+        res.status(201).json({
             message: "Submission saved successfully to MongoDB & Cloudinary!",
-            submissionId: saved._id 
+            submissionId: saved._id
         });
 
     } catch (error) {
@@ -96,7 +96,7 @@ app.get('/api/submissions', async (req, res) => {
 app.use(express.static(path.join(__dirname, '../dist')));
 
 // Catch-all route to serve the React frontend for any non-API requests
-app.get('*', (req, res) => {
+app.get('/{*splat}', (req, res) => {
     res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
