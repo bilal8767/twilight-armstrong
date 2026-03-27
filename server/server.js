@@ -23,13 +23,29 @@ console.log('CLOUDINARY_CLOUD_NAME exists:', !!process.env.CLOUDINARY_CLOUD_NAME
 console.log('CLOUDINARY_API_KEY exists:', !!process.env.CLOUDINARY_API_KEY);
 console.log('CLOUDINARY_API_SECRET exists:', !!process.env.CLOUDINARY_API_SECRET);
 
-if (!mongoUri) {
-    console.error('MongoDB URI is missing. Please set MONGODB_URI or MONGO_URI.');
-} else {
-    mongoose.connect(mongoUri)
-        .then(() => console.log('Connected to MongoDB Atlas'))
-        .catch(err => console.error('MongoDB connection error:', err));
+const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
+
+async function startServer() {
+    try {
+        if (!mongoUri) {
+            throw new Error('MongoDB URI is missing');
+        }
+
+        await mongoose.connect(mongoUri, {
+            serverSelectionTimeoutMS: 10000
+        });
+
+        console.log('Connected to MongoDB Atlas');
+
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    } catch (error) {
+        console.error('MongoDB startup connection error:', error);
+    }
 }
+
+startServer();
 
 // Mongoose Schema
 const submissionSchema = new mongoose.Schema({
