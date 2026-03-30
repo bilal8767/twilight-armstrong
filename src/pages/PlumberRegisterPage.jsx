@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, UserCircle2, KeyRound, Type } from 'lucide-react';
+import { ArrowLeft, UserCircle2, KeyRound, Type, Wrench, Mail } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 

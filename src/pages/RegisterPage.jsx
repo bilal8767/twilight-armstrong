@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight, Loader2, ArrowLeft } from 'lucide-react';
 
 const RegisterPage = () => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [formData, setFormData] = useState({ name: '', email: '', password: '' });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { register } = useAuth();
     const navigate = useNavigate();
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -18,8 +20,8 @@ const RegisterPage = () => {
         setError('');
         // Simulate network request
         setTimeout(() => {
-            const result = register(name, email, password);
-            setLoading(false);
+            const result = register(formData.name, formData.email, formData.password);
+            
             if (result.success) {
                 if (result.isAdmin) {
                     navigate('/dashboard');
@@ -29,6 +31,7 @@ const RegisterPage = () => {
             } else {
                 setError(result.message);
             }
+            setLoading(false);
         }, 1000);
     };
 
