@@ -9,6 +9,7 @@ import DashboardLayout from './layouts/DashboardLayout';
 // Pages
 // Pages
 import LandingPage from './pages/LandingPage';
+import MobileWizardPage from './pages/MobileWizardPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import PlumberLoginPage from './pages/PlumberLoginPage';
