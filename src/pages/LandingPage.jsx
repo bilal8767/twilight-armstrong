@@ -28,42 +28,70 @@ const LandingPage = () => {
             </header>
 
             {/* Hero */}
-            <section className="container py-20 md:py-32 flex flex-col items-center text-center">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-primary/10 text-accent-primary text-xs font-semibold mb-6 border border-accent-primary/20">
+            <section className="container py-20 flex flex-col items-center justify-center min-h-[85vh] text-center">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-primary/10 text-accent-primary text-xs font-semibold mb-6 border border-accent-primary/20 shadow-[0_0_10px_rgba(59,130,246,0.2)]">
                     <span className="w-2 h-2 rounded-full bg-accent-primary animate-pulse"></span>
-                    v1.0 is now live
+                    Please select your portal
                 </div>
 
-                <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-white/50 pb-2">
-                    Build faster with <br />
-                    <span className="text-accent-primary">Intelligence.</span>
+                <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tight text-white pb-2">
+                    Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">ModernApp</span>
                 </h1>
 
-                <p className="text-lg md:text-xl text-secondary max-w-2xl mb-10 leading-relaxed">
-                    The all-in-one platform for managing your projects, modules, and workflows with a premium, modern interface designed for speed.
+                <p className="text-lg text-secondary max-w-2xl mb-12 leading-relaxed">
+                    Choose how you want to interact with our platform today.
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-4 w-full justify-center max-w-xl">
-                    <div className="flex flex-col w-full sm:w-1/2 gap-3">
-                        <Link
-                            to="/register"
-                            className="group w-full py-4 bg-accent-primary hover:bg-accent-secondary text-white rounded-xl font-semibold transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(59,130,246,0.5)] border border-blue-500/50"
-                        >
-                            Customer Sign Up
-                            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                        </Link>
-                        <p className="text-xs text-secondary">For customers looking to submit forms.</p>
+                <div className="grid md:grid-cols-2 gap-6 w-full max-w-4xl mx-auto px-4">
+                    
+                    {/* Customer Portal Card */}
+                    <div className="group relative w-full rounded-3xl p-1 bg-gradient-to-b from-blue-500/40 to-blue-500/0 hover:shadow-[0_0_40px_rgba(59,130,246,0.3)] transition-all duration-500 cursor-pointer overflow-hidden transform hover:-translate-y-2">
+                        <div className="relative h-full bg-[#0a1122] rounded-[22px] p-8 md:p-10 flex flex-col h-[320px] overflow-hidden">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover:bg-blue-500/20 transition-all duration-700"></div>
+                            
+                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/30">
+                                <Layout size={32} className="text-white" />
+                            </div>
+                            
+                            <h2 className="text-3xl font-bold text-white mb-3 tracking-tight">Customer</h2>
+                            <p className="text-secondary text-base mb-8 flex-grow">
+                                Access your mobile wizard to upload and manage your property documents securely.
+                            </p>
+                            
+                            <Link 
+                                to="/register"
+                                className="w-full py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition-colors flex items-center justify-between px-6 z-10"
+                            >
+                                <span>Get Started</span>
+                                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                        </div>
                     </div>
 
-                    <div className="flex flex-col w-full sm:w-1/2 gap-3">
-                        <Link
-                            to="/plumber/register"
-                            className="w-full py-4 bg-white/5 hover:bg-white/10 text-white rounded-xl font-semibold transition-all border border-white/10 backdrop-blur-sm text-center"
-                        >
-                            Plumber Sign Up
-                        </Link>
-                        <p className="text-xs text-secondary">For partners managing properties.</p>
+                    {/* Plumber Portal Card */}
+                    <div className="group relative w-full rounded-3xl p-1 bg-gradient-to-b from-orange-500/40 to-orange-500/0 hover:shadow-[0_0_40px_rgba(249,115,22,0.3)] transition-all duration-500 cursor-pointer overflow-hidden transform hover:-translate-y-2">
+                        <div className="relative h-full bg-[#0a1122] rounded-[22px] p-8 md:p-10 flex flex-col h-[320px] overflow-hidden">
+                            <div className="absolute bottom-0 left-0 w-64 h-64 bg-orange-500/10 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2 group-hover:bg-orange-500/20 transition-all duration-700"></div>
+                            
+                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center mb-6 shadow-lg shadow-orange-500/30">
+                                <Zap size={32} className="text-white fill-white/20" />
+                            </div>
+                            
+                            <h2 className="text-3xl font-bold text-white mb-3 tracking-tight">Plumber</h2>
+                            <p className="text-secondary text-base mb-8 flex-grow">
+                                Professional partner dashboard to manage assigned installations and customer locations.
+                            </p>
+                            
+                            <Link 
+                                to="/plumber/register"
+                                className="w-full py-4 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white font-bold transition-colors flex items-center justify-between px-6 backdrop-blur-md z-10"
+                            >
+                                <span>Apply / Logon</span>
+                                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                        </div>
                     </div>
+
                 </div>
             </section>
 
