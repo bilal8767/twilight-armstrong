@@ -28,10 +28,10 @@ export const AuthProvider = ({ children }) => {
         
         if (foundUser) {
             const isAdmin = foundUser.email === 'admin@admin.com';
-            const sessionUser = { email: foundUser.email, name: foundUser.name, isAdmin };
+            const sessionUser = { email: foundUser.email, name: foundUser.name, role: foundUser.role || 'customer', isAdmin };
             setUser(sessionUser);
             localStorage.setItem('user', JSON.stringify(sessionUser));
-            return { success: true, isAdmin };
+            return { success: true, isAdmin, role: sessionUser.role };
         }
         return { success: false, message: 'Invalid email or password' };
     };
@@ -41,23 +41,23 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('user');
     };
 
-    const register = (name, email, password) => {
+    const register = (name, email, password, role = 'customer') => {
         const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
         
         if (users.some(u => u.email === email)) {
             return { success: false, message: 'Email already exists' };
         }
 
-        const newUser = { name, email, password };
+        const newUser = { name, email, password, role };
         users.push(newUser);
         localStorage.setItem('registeredUsers', JSON.stringify(users));
         
         const isAdmin = email === 'admin@admin.com';
-        const sessionUser = { email, name, isAdmin };
+        const sessionUser = { email, name, role, isAdmin };
         setUser(sessionUser);
         localStorage.setItem('user', JSON.stringify(sessionUser));
         
-        return { success: true, isAdmin };
+        return { success: true, isAdmin, role };
     };
 
     return (

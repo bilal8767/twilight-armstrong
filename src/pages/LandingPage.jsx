@@ -16,15 +16,14 @@ const LandingPage = () => {
                     </span>
                 </div>
                 <div className="flex items-center gap-4">
-                    <Link to="/login" className="text-sm font-medium hover:text-white text-secondary transition-colors">
-                        Login
-                    </Link>
-                    <Link
-                        to="/register"
-                        className="px-4 py-2 bg-white text-primary rounded-full text-sm font-bold hover:bg-gray-200 transition-colors"
-                    >
-                        Get Started
-                    </Link>
+                    <div className="hidden md:flex gap-4">
+                        <Link to="/login" className="text-sm font-medium hover:text-white text-secondary transition-colors py-2">
+                            Customer Login
+                        </Link>
+                        <Link to="/plumber/login" className="px-4 py-2 bg-white/10 text-white rounded-full text-sm font-bold hover:bg-white/20 transition-colors">
+                            Plumber Portal
+                        </Link>
+                    </div>
                 </div>
             </header>
 
@@ -44,20 +43,27 @@ const LandingPage = () => {
                     The all-in-one platform for managing your projects, modules, and workflows with a premium, modern interface designed for speed.
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-                    <Link
-                        to="/register"
-                        className="group px-8 py-3 bg-accent-primary hover:bg-accent-secondary text-white rounded-lg font-semibold transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:shadow-[0_0_30px_rgba(59,130,246,0.6)]"
-                    >
-                        Start for free
-                        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                    <Link
-                        to="/login"
-                        className="px-8 py-3 bg-white/5 hover:bg-white/10 text-white rounded-lg font-semibold transition-all border border-white/10 backdrop-blur-sm"
-                    >
-                        View Demo
-                    </Link>
+                <div className="flex flex-col sm:flex-row gap-4 w-full justify-center max-w-xl">
+                    <div className="flex flex-col w-full sm:w-1/2 gap-3">
+                        <Link
+                            to="/register"
+                            className="group w-full py-4 bg-accent-primary hover:bg-accent-secondary text-white rounded-xl font-semibold transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(59,130,246,0.5)] border border-blue-500/50"
+                        >
+                            Customer Sign Up
+                            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                        <p className="text-xs text-secondary">For customers looking to submit forms.</p>
+                    </div>
+
+                    <div className="flex flex-col w-full sm:w-1/2 gap-3">
+                        <Link
+                            to="/plumber/register"
+                            className="w-full py-4 bg-white/5 hover:bg-white/10 text-white rounded-xl font-semibold transition-all border border-white/10 backdrop-blur-sm text-center"
+                        >
+                            Plumber Sign Up
+                        </Link>
+                        <p className="text-xs text-secondary">For partners managing properties.</p>
+                    </div>
                 </div>
             </section>
 

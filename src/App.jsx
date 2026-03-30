@@ -9,9 +9,11 @@ import DashboardLayout from './layouts/DashboardLayout';
 // Pages
 // Pages
 import LandingPage from './pages/LandingPage';
-import MobileWizardPage from './pages/MobileWizardPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import PlumberLoginPage from './pages/PlumberLoginPage';
+import PlumberRegisterPage from './pages/PlumberRegisterPage';
+import PlumberDashboardPage from './pages/PlumberDashboardPage';
 import DashboardPage from './pages/DashboardPage';
 import ModulesPage from './pages/ModulesPage';
 import ModuleDetailsPage from './pages/ModuleDetailsPage';
@@ -23,6 +25,16 @@ const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
   if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   if (!user) return <Navigate to="/login" replace />;
+  if (user.role === 'plumber') return <Navigate to="/plumber-dashboard" replace />;
+  return children;
+};
+
+// Plumber Route Component
+const PlumberRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  if (!user) return <Navigate to="/plumber/login" replace />;
+  if (user.role !== 'plumber') return <Navigate to="/wizard" replace />;
   return children;
 };
 
@@ -42,10 +54,16 @@ const App = () => {
         <Routes>
           {/* Public Routes */}
           <Route element={<PublicLayout />}>
-            <Route path="/" element={<Navigate to="/register" replace />} />
+            <Route path="/" element={<Navigate to="/landing" replace />} />
             <Route path="/landing" element={<LandingPage />} />
+            
+            {/* Customer Auth */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            
+            {/* Plumber Auth */}
+            <Route path="/plumber/login" element={<PlumberLoginPage />} />
+            <Route path="/plumber/register" element={<PlumberRegisterPage />} />
           </Route>
 
           {/* Protected Routes */}
@@ -53,6 +71,12 @@ const App = () => {
             <ProtectedRoute>
               <MobileWizardPage />
             </ProtectedRoute>
+          } />
+
+          <Route path="/plumber-dashboard" element={
+            <PlumberRoute>
+              <PlumberDashboardPage />
+            </PlumberRoute>
           } />
           
           <Route path="/dashboard" element={

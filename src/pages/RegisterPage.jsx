@@ -40,7 +40,7 @@ const RegisterPage = () => {
 
             <div className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-2xl shadow-2xl relative z-10">
                 <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold mb-2">Create Account</h2>
+                    <h2 className="text-3xl font-bold mb-2">Customer Sign Up</h2>
                     <p className="text-secondary">Join us to start building better projects</p>
                 </div>
 
