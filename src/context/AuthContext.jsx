@@ -15,6 +15,14 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = (email, password) => {
+        // Automatically allow admin without registration
+        if (email === 'admin@admin.com') {
+            const sessionUser = { email: 'admin@admin.com', name: 'Admin', isAdmin: true };
+            setUser(sessionUser);
+            localStorage.setItem('user', JSON.stringify(sessionUser));
+            return { success: true, isAdmin: true };
+        }
+
         const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
         const foundUser = users.find(u => u.email === email && u.password === password);
         
