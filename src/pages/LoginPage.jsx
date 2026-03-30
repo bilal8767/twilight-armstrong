@@ -20,7 +20,11 @@ const LoginPage = () => {
             const result = login(email, password);
             setLoading(false);
             if (result.success) {
-                navigate('/wizard');
+                if (result.isAdmin) {
+                    navigate('/dashboard');
+                } else {
+                    navigate('/wizard');
+                }
             } else {
                 setError(result.message);
             }

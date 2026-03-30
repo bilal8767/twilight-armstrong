@@ -18,15 +18,20 @@ import ModuleDetailsPage from './pages/ModuleDetailsPage';
 import ModuleFormPage from './pages/ModuleFormPage';
 
 
-// Protected Route Component
+// Protected Route Component (For Normal Users)
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
-
   if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  if (!user) return <Navigate to="/login" replace />;
+  return children;
+};
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
+// Admin Route Component (For Admin Dashboard)
+const AdminRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+  if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  if (!user) return <Navigate to="/login" replace />;
+  if (!user.isAdmin) return <Navigate to="/wizard" replace />;
   return children;
 };
 
@@ -51,9 +56,9 @@ const App = () => {
           } />
           
           <Route path="/dashboard" element={
-            <ProtectedRoute>
+            <AdminRoute>
               <DashboardLayout />
-            </ProtectedRoute>
+            </AdminRoute>
           }>
             <Route index element={<DashboardPage />} />
             <Route path="modules" element={<ModulesPage />} />

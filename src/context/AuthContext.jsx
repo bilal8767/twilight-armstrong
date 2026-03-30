@@ -19,10 +19,11 @@ export const AuthProvider = ({ children }) => {
         const foundUser = users.find(u => u.email === email && u.password === password);
         
         if (foundUser) {
-            const sessionUser = { email: foundUser.email, name: foundUser.name };
+            const isAdmin = foundUser.email === 'admin@admin.com';
+            const sessionUser = { email: foundUser.email, name: foundUser.name, isAdmin };
             setUser(sessionUser);
             localStorage.setItem('user', JSON.stringify(sessionUser));
-            return { success: true };
+            return { success: true, isAdmin };
         }
         return { success: false, message: 'Invalid email or password' };
     };
@@ -43,11 +44,12 @@ export const AuthProvider = ({ children }) => {
         users.push(newUser);
         localStorage.setItem('registeredUsers', JSON.stringify(users));
         
-        const sessionUser = { email, name };
+        const isAdmin = email === 'admin@admin.com';
+        const sessionUser = { email, name, isAdmin };
         setUser(sessionUser);
         localStorage.setItem('user', JSON.stringify(sessionUser));
         
-        return { success: true };
+        return { success: true, isAdmin };
     };
 
     return (
