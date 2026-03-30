@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Mail, Lock, ArrowRight, Loader2 } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Loader2, ArrowLeft } from 'lucide-react';
 
 const LoginPage = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [formData, setFormData] = useState({ email: '', password: '' });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const { login } = useAuth();
+    const { login, logout } = useAuth();
     const navigate = useNavigate();
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -17,85 +20,94 @@ const LoginPage = () => {
         setError('');
         // Simulate network request
         setTimeout(() => {
-            const result = login(email, password);
-            setLoading(false);
-            if (result.success) {
-                if (result.isAdmin) {
-                    navigate('/dashboard');
+            const res = login(formData.email, formData.password);
+            
+            if (res.success) {
+                if (res.isAdmin) {
+                    setError('Administrators must use the dedicated Admin Portal to log in.');
+                    logout();
                 } else {
                     navigate('/wizard');
                 }
             } else {
-                setError(result.message);
+                setError(res.message || 'Failed to sign in');
             }
+            setLoading(false);
         }, 1000);
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-            {/* Background Ambience */}
-            <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-accent-primary/20 rounded-full blur-[100px] pointer-events-none" />
-            <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="auth-wrapper">
+            <div style={{ position: 'absolute', top: '2rem', left: '2rem', zIndex: 20 }}>
+                <Link to="/landing" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
+                    <ArrowLeft size={20} /> Back
+                </Link>
+            </div>
 
-            <div className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-2xl shadow-2xl relative z-10">
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold mb-2">Customer Sign In</h2>
-                    <p className="text-secondary">Sign in to continue to your dashboard</p>
+            <div className="glass-panel auth-card">
+                <div className="auth-header">
+                    <h2>Customer Sign In</h2>
+                    <p>Access your mobile wizard to upload documents</p>
                 </div>
 
-                {error && <div className="mb-4 bg-red-500/10 border border-red-500/50 text-red-500 text-sm p-3 rounded-lg text-center">{error}</div>}
+                <form onSubmit={handleSubmit} className="auth-form">
+                    {error && (
+                        <div style={{ padding: '0.75rem', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.5)', borderRadius: '0.5rem', color: '#ef4444', fontSize: '0.875rem' }}>
+                            {error}
+                        </div>
+                    )}
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-secondary ml-1">Email</label>
-                        <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary w-5 h-5" />
+                    <div className="input-group">
+                        <label>Email Address</label>
+                        <div className="input-wrapper">
+                            <Mail className="input-icon" size={18} />
                             <input
                                 type="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                placeholder="customer@example.com"
+                                className="premium-input"
                                 required
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="w-full pl-10 bg-black/20 border-white/10 focus:border-accent-primary focus:ring-1 focus:ring-accent-primary transition-all rounded-lg py-2.5"
-                                placeholder="you@example.com"
                             />
                         </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-secondary ml-1">Password</label>
-                        <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary w-5 h-5" />
+                    <div className="input-group">
+                        <label>Password</label>
+                        <div className="input-wrapper">
+                            <Lock className="input-icon" size={18} />
                             <input
                                 type="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                placeholder="••••••"
+                                className="premium-input"
                                 required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-full pl-10 bg-black/20 border-white/10 focus:border-accent-primary focus:ring-1 focus:ring-accent-primary transition-all rounded-lg py-2.5"
-                                placeholder="••••••••"
                             />
                         </div>
                     </div>
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-accent-primary hover:bg-accent-secondary text-white font-semibold py-2.5 rounded-lg transition-all flex items-center justify-center gap-2 mt-6 disabled:opacity-70 disabled:cursor-not-allowed"
-                    >
-                        {loading ? (
-                            <Loader2 className="w-5 h-5 animate-spin" />
-                        ) : (
-                            <>
-                                Sign In <ArrowRight className="w-5 h-5" />
-                            </>
-                        )}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '-0.5rem' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#94a3b8', fontSize: '0.875rem', cursor: 'pointer' }}>
+                            <input type="checkbox" style={{ accentColor: '#3b82f6' }} /> Remember me
+                        </label>
+                        <a href="#" style={{ color: '#3b82f6', fontSize: '0.875rem', textDecoration: 'none' }}>Forgot password?</a>
+                    </div>
+
+                    <button type="submit" disabled={loading} className="premium-btn" style={{ marginTop: '1rem' }}>
+                        {loading ? <Loader2 className="animate-spin" size={20} /> : <>Sign In <ArrowRight size={20} /></>}
                     </button>
                 </form>
 
-                <div className="mt-6 text-center text-sm text-secondary">
-                    Don't have an account?{' '}
-                    <Link to="/register" className="text-accent-primary hover:underline font-medium">
-                        Create account
-                    </Link>
+                <div className="auth-footer">
+                    <p>
+                        Don't have an account? <Link to="/register" className="auth-link">Create one</Link>
+                    </p>
+                    <p style={{ marginTop: '0.5rem' }}>
+                        Are you a Plumber/Partner? <Link to="/plumber/login" className="auth-link orange">Plumber Portal</Link>
+                    </p>
                 </div>
             </div>
         </div>

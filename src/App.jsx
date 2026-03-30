@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import './styles/app-premium.css';
 
 // Layouts
 import PublicLayout from './layouts/PublicLayout';
@@ -14,6 +15,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import PlumberLoginPage from './pages/PlumberLoginPage';
 import PlumberRegisterPage from './pages/PlumberRegisterPage';
+import AdminLoginPage from './pages/AdminLoginPage';
 import PlumberDashboardPage from './pages/PlumberDashboardPage';
 import DashboardPage from './pages/DashboardPage';
 import ModulesPage from './pages/ModulesPage';
@@ -61,6 +63,9 @@ const App = () => {
             {/* Customer Auth */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            
+            {/* Admin Secret Auth */}
+            <Route path="/admin" element={<AdminLoginPage />} />
             
             {/* Plumber Auth */}
             <Route path="/plumber/login" element={<PlumberLoginPage />} />

@@ -28,66 +28,56 @@ const LandingPage = () => {
             </header>
 
             {/* Hero */}
-            <section className="container py-20 flex flex-col items-center justify-center min-h-[85vh] text-center">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-primary/10 text-accent-primary text-xs font-semibold mb-6 border border-accent-primary/20 shadow-[0_0_10px_rgba(59,130,246,0.2)]">
-                    <span className="w-2 h-2 rounded-full bg-accent-primary animate-pulse"></span>
-                    Please select your portal
+            <section className="landing-hero">
+                <div className="glass-panel" style={{ padding: '0.5rem 1rem', borderRadius: '2rem', display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '2rem' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#3b82f6', boxShadow: '0 0 10px #3b82f6' }}></span>
+                    <span style={{ color: '#60a5fa', fontSize: '0.875rem', fontWeight: '600' }}>Please select your portal</span>
                 </div>
 
-                <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tight text-white pb-2">
-                    Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">ModernApp</span>
+                <h1 className="landing-title">
+                    Welcome to <span className="text-gradient">ModernApp</span>
                 </h1>
 
-                <p className="text-lg text-secondary max-w-2xl mb-12 leading-relaxed">
+                <p className="landing-subtitle">
                     Choose how you want to interact with our platform today.
                 </p>
 
-                <div className="grid md:grid-cols-2 gap-6 w-full max-w-4xl mx-auto px-4">
+                <div className="landing-cards">
                     
                     {/* Customer Portal Card */}
-                    <div className="group relative w-full rounded-3xl p-1 bg-gradient-to-b from-blue-500/40 to-blue-500/0 hover:shadow-[0_0_40px_rgba(59,130,246,0.3)] transition-all duration-500 cursor-pointer overflow-hidden transform hover:-translate-y-2">
-                        <div className="relative h-full bg-[#0a1122] rounded-[22px] p-8 md:p-10 flex flex-col h-[320px] overflow-hidden">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover:bg-blue-500/20 transition-all duration-700"></div>
-                            
-                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/30">
-                                <Layout size={32} className="text-white" />
+                    <div className="portal-card customer">
+                        <div className="portal-card-inner">
+                            <div className="portal-icon customer">
+                                <Layout size={32} color="white" />
                             </div>
                             
-                            <h2 className="text-3xl font-bold text-white mb-3 tracking-tight">Customer</h2>
-                            <p className="text-secondary text-base mb-8 flex-grow">
+                            <h2>Customer</h2>
+                            <p>
                                 Access your mobile wizard to upload and manage your property documents securely.
                             </p>
                             
-                            <Link 
-                                to="/register"
-                                className="w-full py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold transition-colors flex items-center justify-between px-6 z-10"
-                            >
-                                <span>Get Started</span>
-                                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                            <Link to="/login" className="portal-btn customer">
+                                <span>Customer Portal</span>
+                                <ArrowRight size={20} />
                             </Link>
                         </div>
                     </div>
 
                     {/* Plumber Portal Card */}
-                    <div className="group relative w-full rounded-3xl p-1 bg-gradient-to-b from-orange-500/40 to-orange-500/0 hover:shadow-[0_0_40px_rgba(249,115,22,0.3)] transition-all duration-500 cursor-pointer overflow-hidden transform hover:-translate-y-2">
-                        <div className="relative h-full bg-[#0a1122] rounded-[22px] p-8 md:p-10 flex flex-col h-[320px] overflow-hidden">
-                            <div className="absolute bottom-0 left-0 w-64 h-64 bg-orange-500/10 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2 group-hover:bg-orange-500/20 transition-all duration-700"></div>
-                            
-                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center mb-6 shadow-lg shadow-orange-500/30">
-                                <Zap size={32} className="text-white fill-white/20" />
+                    <div className="portal-card plumber">
+                        <div className="portal-card-inner">
+                            <div className="portal-icon plumber">
+                                <Zap size={32} color="white" />
                             </div>
                             
-                            <h2 className="text-3xl font-bold text-white mb-3 tracking-tight">Plumber</h2>
-                            <p className="text-secondary text-base mb-8 flex-grow">
+                            <h2>Plumber</h2>
+                            <p>
                                 Professional partner dashboard to manage assigned installations and customer locations.
                             </p>
                             
-                            <Link 
-                                to="/plumber/register"
-                                className="w-full py-4 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white font-bold transition-colors flex items-center justify-between px-6 backdrop-blur-md z-10"
-                            >
-                                <span>Apply / Logon</span>
-                                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                            <Link to="/plumber/login" className="portal-btn plumber">
+                                <span>Partner Portal</span>
+                                <ArrowRight size={20} />
                             </Link>
                         </div>
                     </div>

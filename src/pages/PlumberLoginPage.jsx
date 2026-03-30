@@ -21,92 +21,92 @@ const PlumberLoginPage = () => {
         e.preventDefault();
         setLoading(true);
         setTimeout(() => {
-            const result = login(formData.email, formData.password);
-            setLoading(false);
-            if (result.success) {
-                if (result.isAdmin) {
-                    navigate('/dashboard');
-                } else if (result.role === 'plumber') {
+            const res = login(formData.email, formData.password);
+            if (res.success) {
+                if (res.isAdmin) {
+                    setError('Administrators must use the dedicated Admin Portal to log in.');
+                    logout();
+                } else if (res.role === 'plumber') {
                     navigate('/plumber-dashboard');
                 } else {
-                    navigate('/wizard');
+                    setError('Invalid role. Please sign in via the Customer portal.');
+                    logout();
                 }
             } else {
-                setError(result.message);
+                setError(res.message || 'Failed to login');
             }
-        }, 800);
+            setLoading(false);
+        }, 1000);
     };
 
     return (
-        <div className="min-h-screen bg-primary flex flex-col items-center justify-center p-4 relative overflow-hidden">
-            <div className="absolute top-8 left-8">
-                <Link to="/landing" className="flex items-center gap-2 text-secondary hover:text-white transition-colors">
+        <div className="auth-wrapper">
+            <div style={{ position: 'absolute', top: '2rem', left: '2rem', zIndex: 20 }}>
+                <Link to="/landing" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
                     <ArrowLeft size={20} /> Back
                 </Link>
             </div>
 
-            <div className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-2xl shadow-2xl relative z-10">
-                <div className="text-center mb-8">
-                    <div className="w-16 h-16 bg-blue-500/20 text-blue-400 rounded-2xl mx-auto flex items-center justify-center mb-4">
+            <div className="glass-panel auth-card">
+                <div className="auth-header">
+                    <div style={{ width: '4rem', height: '4rem', background: 'rgba(249, 115, 22, 0.1)', color: '#f97316', borderRadius: '1rem', margin: '0 auto 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <UserCircle2 size={32} />
                     </div>
-                    <h2 className="text-3xl font-bold mb-2 text-white">Plumber Sign In</h2>
-                    <p className="text-secondary">Access your assigned jobs and properties</p>
+                    <h2>Plumber Sign In</h2>
+                    <p>Access your assigned jobs and properties</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-2 space-y-6">
+                <form onSubmit={handleSubmit} className="auth-form">
                     {error && (
-                        <div className="p-3 bg-red-500/10 border border-red-500/50 rounded-lg text-red-500 text-sm">
+                        <div style={{ padding: '0.75rem', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.5)', borderRadius: '0.5rem', color: '#ef4444', fontSize: '0.875rem' }}>
                             {error}
                         </div>
                     )}
 
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-secondary">Email</label>
-                        <div className="relative">
-                            <UserCircle2 className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary" size={18} />
+                    <div className="input-group">
+                        <label>Email Address</label>
+                        <div className="input-wrapper">
+                            <UserCircle2 className="input-icon" size={18} />
                             <input
                                 type="email"
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
                                 placeholder="plumber@example.com"
-                                className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white focus:outline-none focus:border-blue-500 focus:bg-white/10 transition-all"
+                                className="premium-input"
                                 required
                             />
                         </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-secondary">Password</label>
-                        <div className="relative">
-                            <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary" size={18} />
+                    <div className="input-group">
+                        <label>Password</label>
+                        <div className="input-wrapper">
+                            <KeyRound className="input-icon" size={18} />
                             <input
                                 type="password"
                                 name="password"
                                 value={formData.password}
                                 onChange={handleChange}
-                                placeholder="&bull;&bull;&bull;&bull;&bull;&bull;"
-                                className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white focus:outline-none focus:border-blue-500 focus:bg-white/10 transition-all"
+                                placeholder="••••••"
+                                className="premium-input"
                                 required
                             />
                         </div>
                     </div>
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
-                    >
+                    <button type="submit" disabled={loading} className="premium-btn" style={{ marginTop: '1rem', background: '#f97316' }}>
                         {loading ? 'Signing in...' : 'Sign In'}
                     </button>
                 </form>
 
-                <div className="text-center mt-8 text-secondary">
-                    Don't have a plumber account?{' '}
-                    <Link to="/plumber/register" className="text-blue-400 hover:text-blue-300 hover:underline">
-                        Apply Here
-                    </Link>
+                <div className="auth-footer">
+                    <p>
+                        Don't have a plumber account? <Link to="/plumber/register" className="auth-link orange">Apply Here</Link>
+                    </p>
+                    <p style={{ marginTop: '0.5rem' }}>
+                        Are you a Customer? <Link to="/login" className="auth-link">Customer Portal</Link>
+                    </p>
                 </div>
             </div>
         </div>

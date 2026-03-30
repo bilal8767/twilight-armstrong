@@ -33,85 +33,86 @@ const RegisterPage = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-            {/* Background Ambience */}
-            <div className="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] bg-accent-primary/20 rounded-full blur-[100px] pointer-events-none" />
-            <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="auth-wrapper">
+            <div style={{ position: 'absolute', top: '2rem', left: '2rem', zIndex: 20 }}>
+                <Link to="/landing" style={{ color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
+                    <ArrowLeft size={20} /> Back
+                </Link>
+            </div>
 
-            <div className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-2xl shadow-2xl relative z-10">
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold mb-2">Customer Sign Up</h2>
-                    <p className="text-secondary">Join us to start building better projects</p>
+            <div className="glass-panel auth-card">
+                <div className="auth-header">
+                    <h2>Customer Sign Up</h2>
+                    <p>Create an account to access the wizard</p>
                 </div>
 
-                {error && <div className="mb-4 bg-red-500/10 border border-red-500/50 text-red-500 text-sm p-3 rounded-lg text-center">{error}</div>}
+                <form onSubmit={handleSubmit} className="auth-form">
+                    {error && (
+                        <div style={{ padding: '0.75rem', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.5)', borderRadius: '0.5rem', color: '#ef4444', fontSize: '0.875rem' }}>
+                            {error}
+                        </div>
+                    )}
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-secondary ml-1">Full Name</label>
-                        <div className="relative">
-                            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary w-5 h-5" />
+                    <div className="input-group">
+                        <label>Full Name</label>
+                        <div className="input-wrapper">
+                            <User className="input-icon" size={18} />
                             <input
                                 type="text"
-                                required
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                className="w-full pl-10 bg-black/20 border-white/10 focus:border-accent-primary focus:ring-1 focus:ring-accent-primary transition-all rounded-lg py-2.5"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
                                 placeholder="John Doe"
+                                className="premium-input"
+                                required
                             />
                         </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-secondary ml-1">Email</label>
-                        <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary w-5 h-5" />
+                    <div className="input-group">
+                        <label>Email Address</label>
+                        <div className="input-wrapper">
+                            <Mail className="input-icon" size={18} />
                             <input
                                 type="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                placeholder="customer@example.com"
+                                className="premium-input"
                                 required
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="w-full pl-10 bg-black/20 border-white/10 focus:border-accent-primary focus:ring-1 focus:ring-accent-primary transition-all rounded-lg py-2.5"
-                                placeholder="you@example.com"
                             />
                         </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-secondary ml-1">Password</label>
-                        <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary w-5 h-5" />
+                    <div className="input-group">
+                        <label>Password</label>
+                        <div className="input-wrapper">
+                            <Lock className="input-icon" size={18} />
                             <input
                                 type="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                placeholder="••••••"
+                                className="premium-input"
                                 required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-full pl-10 bg-black/20 border-white/10 focus:border-accent-primary focus:ring-1 focus:ring-accent-primary transition-all rounded-lg py-2.5"
-                                placeholder="••••••••"
                             />
                         </div>
                     </div>
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-accent-primary hover:bg-accent-secondary text-white font-semibold py-2.5 rounded-lg transition-all flex items-center justify-center gap-2 mt-6 disabled:opacity-70 disabled:cursor-not-allowed"
-                    >
-                        {loading ? (
-                            <Loader2 className="w-5 h-5 animate-spin" />
-                        ) : (
-                            <>
-                                Create Account <ArrowRight className="w-5 h-5" />
-                            </>
-                        )}
+                    <button type="submit" disabled={loading} className="premium-btn" style={{ marginTop: '1rem' }}>
+                        {loading ? <Loader2 className="animate-spin" size={20} /> : <>Create Account <ArrowRight size={20} /></>}
                     </button>
                 </form>
 
-                <div className="mt-6 text-center text-sm text-secondary">
-                    Already have an account?{' '}
-                    <Link to="/login" className="text-accent-primary hover:underline font-medium">
-                        Sign in
-                    </Link>
+                <div className="auth-footer">
+                    <p>
+                        Already have an account? <Link to="/login" className="auth-link">Sign in</Link>
+                    </p>
+                    <p style={{ marginTop: '0.5rem' }}>
+                        Are you a Plumber/Partner? <Link to="/plumber/register" className="auth-link orange">Plumber Sign Up</Link>
+                    </p>
                 </div>
             </div>
         </div>
