@@ -1,10 +1,11 @@
-const express = require('express');
-const cors = require('cors');
-const multer = require('multer');
-const mongoose = require('mongoose');
-const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import multer from 'multer';
+import mongoose from 'mongoose';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 
@@ -94,4 +95,4 @@ app.get('/api/submissions', async (req, res) => {
 });
 
 // Export the app for Vercel Serverless Functions instead of app.listen()
-module.exports = app;
+export default app;
