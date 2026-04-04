@@ -185,6 +185,7 @@ const MobileWizardPage = () => {
                                     placeholder={t.namePlaceholder}
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    required
                                 />
 
                                 <div className="relative">
@@ -192,6 +193,7 @@ const MobileWizardPage = () => {
                                         className="w-full bg-[#FAFAFA] border border-gray-300 text-[14px] px-4 py-3.5 rounded-[4px] text-black appearance-none focus:outline-none focus:border-gray-400"
                                         value={formData.address}
                                         onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                        required
                                     >
                                         <option value="" disabled>{t.selectAddress}</option>
                                         <option value="1">123 Market St, San Francisco</option>
@@ -205,6 +207,7 @@ const MobileWizardPage = () => {
                                         className="w-full bg-[#FAFAFA] border border-gray-300 text-[14px] px-4 py-3.5 rounded-[4px] text-black appearance-none focus:outline-none focus:border-gray-400"
                                         value={formData.propertyDetails}
                                         onChange={(e) => setFormData({ ...formData, propertyDetails: e.target.value })}
+                                        required
                                     >
                                         <option value="" disabled>{t.selectType}</option>
                                         <option value="apt">{t.apartment}</option>
@@ -218,6 +221,7 @@ const MobileWizardPage = () => {
                                     placeholder={t.propertyPlaceholder}
                                     value={formData.property}
                                     onChange={(e) => setFormData({ ...formData, property: e.target.value })}
+                                    required
                                 />
                             </div>
 
@@ -313,17 +317,20 @@ const MobileWizardPage = () => {
     );
 };
 
-const InstagramInput = ({ placeholder, value, onChange }) => (
-    <input
-        type="text"
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        className="w-full bg-[#FAFAFA] border border-gray-300 text-[14px] px-4 py-3.5 rounded-[4px] text-black placeholder:text-gray-400 focus:outline-none focus:border-gray-400"
-    />
+const InstagramInput = ({ placeholder, value, onChange, required }) => (
+    <div className="relative">
+        <input
+            type="text"
+            className="w-full bg-[#FAFAFA] border border-gray-300 text-[14px] px-4 py-3.5 rounded-[4px] text-black placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors"
+            placeholder={placeholder}
+            value={value}
+            onChange={onChange}
+            required={required}
+        />
+    </div>
 );
 
-const InstagramUpload = ({ label, emptyText, value, onChange }) => (
+const InstagramUpload = ({ label, emptyText, value, onChange, required }) => (
     <div className="bg-[#FAFAFA] border border-gray-300 rounded-[4px] p-4 flex flex-col gap-2 relative">
         <span className="text-[14px] font-semibold text-black">{label}</span>
 
