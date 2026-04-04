@@ -41,14 +41,14 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('user');
     };
 
-    const register = (name, email, password, role = 'customer') => {
+    const register = (name, email, password, role = 'customer', phone = '', message = '') => {
         const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
         
         if (users.some(u => u.email === email)) {
             return { success: false, message: 'Email already exists' };
         }
 
-        const newUser = { name, email, password, role };
+        const newUser = { name, email, password, role, phone, message };
         users.push(newUser);
         localStorage.setItem('registeredUsers', JSON.stringify(users));
         

@@ -85,16 +85,29 @@ const MobileWizardPage = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    const handleNext = () => setStep(3);
+    const handleNext = () => {
+        setErrorMessage('');
+        if (!formData.name || !formData.address || !formData.propertyDetails || !formData.property) {
+            setErrorMessage(lang === 'de' ? 'Bitte füllen Sie alle Pflichtfelder aus.' : 'Please fill all mandatory fields.');
+            return;
+        }
+        setStep(3);
+    };
 
     const handleFileChange = (key, file) => {
         setFiles({ ...files, [key]: file });
     };
 
     const handleSubmit = async () => {
-        setSubmitting(true);
         setErrorMessage('');
         setSuccessMessage('');
+        
+        if (!files.energie || !files.heizung) {
+            setErrorMessage(lang === 'de' ? 'Bitte laden Sie beide notwendigen Dokumente hoch.' : 'Please upload both mandatory documents.');
+            return;
+        }
+        
+        setSubmitting(true);
 
         const submitData = new FormData();
         submitData.append('name', formData.name);
@@ -209,6 +222,9 @@ const MobileWizardPage = () => {
                             </div>
 
                             <div className="mt-8">
+                                {errorMessage && (
+                                    <div className="text-red-500 text-sm text-center mb-4">{errorMessage}</div>
+                                )}
                                 <button
                                     onClick={handleNext}
                                     className="w-full bg-[#0095F6] hover:bg-[#1877F2] text-white font-semibold text-[14px] py-3.5 rounded-[8px] transition-colors"
