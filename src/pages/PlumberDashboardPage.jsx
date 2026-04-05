@@ -1,9 +1,26 @@
-import React from 'react';
-import { LogOut, Wrench, MapPin, CheckCircle, FileText, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { LogOut, Wrench, MapPin, CheckCircle, FileText, ChevronRight, Phone } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const PlumberDashboardPage = () => {
     const { user, logout } = useAuth();
+    const [jobs, setJobs] = useState([]);
+
+    useEffect(() => {
+        fetchJobs();
+    }, []);
+
+    const fetchJobs = async () => {
+        try {
+            const response = await fetch('http://localhost:3001/api/submissions');
+            if (response.ok) {
+                const data = await response.json();
+                setJobs(data);
+            }
+        } catch (error) {
+            console.error('Error fetching jobs:', error);
+        }
+    };
 
     return (
         <div className="dashboard-page">
@@ -60,11 +77,7 @@ const PlumberDashboardPage = () => {
 
                 {/* Job Cards */}
                 <div className="job-list">
-                    {[
-                        { id: 'JOB-1049', name: 'John Peterson', address: '123 Maple Street', time: 'Today, 14:00' },
-                        { id: 'JOB-1050', name: 'Sarah Connor', address: '456 Tech Avenue', time: 'Tomorrow, 09:00' },
-                        { id: 'JOB-1051', name: 'James Doe', address: '789 Oak Boulevard', time: 'Tomorrow, 11:30' }
-                    ].map((job, idx) => (
+                    {jobs.map((job, idx) => (
                         <div key={idx} className="job-card">
                             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                 <div style={{ width: '3rem', height: '3rem', backgroundColor: '#f8fafc', borderRadius: '0.5rem', border: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -72,10 +85,14 @@ const PlumberDashboardPage = () => {
                                 </div>
                                 <div>
                                     <h4 style={{ fontSize: '0.875rem', fontWeight: 'bold', color: '#0f172a' }}>
-                                        {job.name} <span style={{ fontWeight: 'normal', color: '#94a3b8', fontSize: '0.75rem', marginLeft: '0.5rem' }}>{job.id}</span>
+                                        {job.name || 'Unknown Customer'}
                                     </h4>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.125rem' }}>
+                                        <Phone size={12} color="#64748b" />
+                                        <p style={{ fontSize: '0.75rem', color: '#64748b', margin: 0 }}>{job.phoneNumber || 'No phone number'}</p>
+                                    </div>
                                     <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.125rem' }}>{job.address}</p>
-                                    <p style={{ fontSize: '0.75rem', fontWeight: '600', color: '#f97316', marginTop: '0.25rem' }}>{job.time}</p>
+                                    <p style={{ fontSize: '0.75rem', fontWeight: '600', color: '#f97316', marginTop: '0.25rem' }}>{new Date(job.timestamp).toLocaleDateString()}</p>
                                 </div>
                             </div>
                             <div className="icon-btn">
@@ -83,6 +100,9 @@ const PlumberDashboardPage = () => {
                             </div>
                         </div>
                     ))}
+                    {jobs.length === 0 && (
+                        <p style={{ textAlign: 'center', color: '#64748b', padding: '2rem 0' }}>No assignments available.</p>
+                    )}
                 </div>
             </main>
 

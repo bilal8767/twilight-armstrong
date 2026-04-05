@@ -24,6 +24,7 @@ if (process.env.MONGODB_URI) {
 const submissionSchema = new mongoose.Schema({
     name: String,
     userEmail: String,
+    phoneNumber: String,
     address: String,
     propertyType: String,
     propertyName: String,
@@ -58,7 +59,7 @@ app.post('/api/submissions', upload.fields([
     { name: 'heizung', maxCount: 1 }
 ]), async (req, res) => {
     try {
-        const { name, address, propertyDetails, property, userEmail } = req.body;
+        const { name, address, propertyDetails, property, userEmail, phoneNumber } = req.body;
         
         const energiePath = req.files && req.files['energie'] ? req.files['energie'][0].path : null;
         const heizungPath = req.files && req.files['heizung'] ? req.files['heizung'][0].path : null;
@@ -66,6 +67,7 @@ app.post('/api/submissions', upload.fields([
         const newSubmission = new Submission({
             name,
             userEmail,
+            phoneNumber,
             address,
             propertyType: propertyDetails,
             propertyName: property,

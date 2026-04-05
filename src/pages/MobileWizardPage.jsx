@@ -11,6 +11,8 @@ const translations = {
         personalInfo: "Personal Info",
         fullName: "Full Name",
         namePlaceholder: "Full Name",
+        phoneNumber: "Phone Number",
+        phonePlaceholder: "Phone Number",
         address: "Address",
         selectAddress: "Select Address",
         propertyType: "Property Type",
@@ -40,6 +42,8 @@ const translations = {
         personalInfo: "Persönliche Info",
         fullName: "Name",
         namePlaceholder: "Vollständiger Name",
+        phoneNumber: "Telefonnummer",
+        phonePlaceholder: "Telefonnummer",
         address: "Adresse",
         selectAddress: "Adresse auswählen",
         propertyType: "Immobilientyp",
@@ -75,6 +79,7 @@ const MobileWizardPage = () => {
 
     const [formData, setFormData] = useState({
         name: '',
+        phoneNumber: '',
         address: '',
         propertyDetails: '',
         property: ''
@@ -91,7 +96,7 @@ const MobileWizardPage = () => {
 
     const handleNext = () => {
         setErrorMessage('');
-        if (!formData.name || !formData.address || !formData.propertyDetails || !formData.property) {
+        if (!formData.name || !formData.phoneNumber || !formData.address || !formData.propertyDetails || !formData.property) {
             setErrorMessage(lang === 'de' ? 'Bitte füllen Sie alle Pflichtfelder aus.' : 'Please fill all mandatory fields.');
             return;
         }
@@ -115,6 +120,7 @@ const MobileWizardPage = () => {
 
         const submitData = new FormData();
         submitData.append('name', formData.name);
+        submitData.append('phoneNumber', formData.phoneNumber);
         submitData.append('address', formData.address);
         submitData.append('propertyDetails', formData.propertyDetails);
         submitData.append('property', formData.property);
@@ -190,6 +196,13 @@ const MobileWizardPage = () => {
                                     placeholder={t.namePlaceholder}
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    required
+                                />
+
+                                <InstagramInput
+                                    placeholder={t.phonePlaceholder}
+                                    value={formData.phoneNumber}
+                                    onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
                                     required
                                 />
 
@@ -291,6 +304,7 @@ const MobileWizardPage = () => {
                                     setStep(2);
                                     setFormData({
                                         name: '',
+                                        phoneNumber: '',
                                         address: '',
                                         propertyDetails: '',
                                         property: ''
