@@ -23,6 +23,7 @@ if (process.env.MONGODB_URI) {
 // Mongoose Schema
 const submissionSchema = new mongoose.Schema({
     name: String,
+    userEmail: String,
     address: String,
     propertyType: String,
     propertyName: String,
@@ -57,13 +58,14 @@ app.post('/api/submissions', upload.fields([
     { name: 'heizung', maxCount: 1 }
 ]), async (req, res) => {
     try {
-        const { name, address, propertyDetails, property } = req.body;
+        const { name, address, propertyDetails, property, userEmail } = req.body;
         
         const energiePath = req.files && req.files['energie'] ? req.files['energie'][0].path : null;
         const heizungPath = req.files && req.files['heizung'] ? req.files['heizung'][0].path : null;
 
         const newSubmission = new Submission({
             name,
+            userEmail,
             address,
             propertyType: propertyDetails,
             propertyName: property,
@@ -91,6 +93,19 @@ app.get('/api/submissions', async (req, res) => {
     } catch (error) {
         console.error("Database fetch error:", error);
         res.status(500).json({ error: "Failed to fetch submissions from database." });
+    }
+});
+
+// API Route to fetch submissions by user email
+app.get('/api/submissions/user/:email', async (req, res) => {
+    try {
+        const { email } = req.params;
+        // Also support old submissions without an email in a real app, but for this constraint we filter strictly by userEmail
+        const submissions = await Submission.find({ userEmail: email }).sort({ timestamp: -1 });
+        res.status(200).json(submissions);
+    } catch (error) {
+        console.error("Database fetch error:", error);
+        res.status(500).json({ error: "Failed to fetch user submissions." });
     }
 });
 
