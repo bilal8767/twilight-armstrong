@@ -48,8 +48,8 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
-        folder: 'submissions',
-        upload_preset: 'submissions',
+        folder: 'ml_uploads',
+        upload_preset: 'ml_uploads',
         allowed_formats: ['jpg', 'png', 'jpeg', 'pdf'],
     },
 });
