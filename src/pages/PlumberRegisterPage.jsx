@@ -24,13 +24,7 @@ const PlumberRegisterPage = () => {
             const result = register(formData.name, formData.email, formData.password, 'plumber');
             setLoading(false);
             if (result.success) {
-                if (result.isAdmin) {
-                    navigate('/dashboard');
-                } else if (result.role === 'plumber') {
-                    navigate('/plumber-dashboard');
-                } else {
-                    navigate('/wizard');
-                }
+                navigate('/plumber/login');
             } else {
                 setError(result.message);
             }

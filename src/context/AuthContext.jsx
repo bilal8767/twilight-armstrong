@@ -52,12 +52,7 @@ export const AuthProvider = ({ children }) => {
         users.push(newUser);
         localStorage.setItem('registeredUsers', JSON.stringify(users));
         
-        const isAdmin = email === 'admin@admin.com';
-        const sessionUser = { email, name, role, isAdmin };
-        setUser(sessionUser);
-        localStorage.setItem('user', JSON.stringify(sessionUser));
-        
-        return { success: true, isAdmin, role };
+        return { success: true };
     };
 
     return (

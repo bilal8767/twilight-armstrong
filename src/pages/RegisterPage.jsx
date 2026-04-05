@@ -23,11 +23,7 @@ const RegisterPage = () => {
             const result = register(formData.name, formData.email, formData.password, 'customer', formData.phone, formData.message);
             
             if (result.success) {
-                if (result.isAdmin) {
-                    navigate('/dashboard');
-                } else {
-                    navigate('/wizard');
-                }
+                navigate('/login');
             } else {
                 setError(result.message);
             }
