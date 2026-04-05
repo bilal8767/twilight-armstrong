@@ -19,7 +19,7 @@ const CustomerDashboardPage = () => {
 
     const fetchSubmissions = async (email) => {
         try {
-            const response = await fetch(`/api/submissions/user/${encodeURIComponent(email)}`);
+            const response = await fetch(`http://localhost:3001/api/submissions/user/${encodeURIComponent(email)}`);
             if (response.ok) {
                 const data = await response.json();
                 setSubmissions(data);

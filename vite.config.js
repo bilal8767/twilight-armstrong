@@ -5,8 +5,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'https://twilight-armstrong.onrender.com',
-      '/uploads': 'https://twilight-armstrong.onrender.com'
+      '/api': 'http://localhost:3001',
+      '/uploads': 'http://localhost:3001'
     }
   }
 })
