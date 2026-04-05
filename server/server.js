@@ -2,13 +2,12 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
-const path = require('path');
 const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 10000; // Render usually uses 10000
 
 // Middleware
 app.use(cors());
@@ -16,34 +15,6 @@ app.use(express.json());
 
 // MongoDB Connection
 const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
-
-console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
-console.log('MONGO_URI exists:', !!process.env.MONGO_URI);
-console.log('CLOUDINARY_CLOUD_NAME exists:', !!process.env.CLOUDINARY_CLOUD_NAME);
-console.log('CLOUDINARY_API_KEY exists:', !!process.env.CLOUDINARY_API_KEY);
-console.log('CLOUDINARY_API_SECRET exists:', !!process.env.CLOUDINARY_API_SECRET);
-
-async function startServer() {
-    try {
-        if (!mongoUri) {
-            throw new Error('MongoDB URI is missing');
-        }
-
-        await mongoose.connect(mongoUri, {
-            serverSelectionTimeoutMS: 10000
-        });
-
-        console.log('Connected to MongoDB Atlas');
-
-        app.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
-        });
-    } catch (error) {
-        console.error('MongoDB startup connection error:', error);
-    }
-}
-
-startServer();
 
 // Mongoose Schema
 const submissionSchema = new mongoose.Schema({
@@ -71,8 +42,10 @@ const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
         folder: 'ml_uploads',
-        upload_preset: 'ml_uploads',
         allowed_formats: ['jpg', 'png', 'jpeg', 'pdf'],
+        // Agar aapne preset banaya hai to niche wali line uncomment karein, 
+        // warna default settings hi kafi hain.
+        // upload_preset: 'ml_uploads', 
     },
 });
 
@@ -84,11 +57,11 @@ app.post('/api/submissions', upload.fields([
     { name: 'heizung', maxCount: 1 }
 ]), async (req, res) => {
     try {
-        console.log('Incoming submission body:', req.body);
-        console.log('Incoming submission files:', req.files);
+        console.log('Data received:', req.body);
 
         const { userEmail, name, address, propertyDetails, property } = req.body;
 
+        // Cloudinary se jo URLs milay hain unhein extract karna
         const energiePath = req.files?.energie ? req.files.energie[0].path : null;
         const heizungPath = req.files?.heizung ? req.files.heizung[0].path : null;
 
@@ -103,51 +76,17 @@ app.post('/api/submissions', upload.fields([
         });
 
         const saved = await newSubmission.save();
+        console.log('Saved to DB:', saved._id);
 
         res.status(201).json({
-            message: 'Submission saved successfully to MongoDB & Cloudinary!',
+            message: 'Submission saved successfully!',
             submissionId: saved._id
         });
 
     } catch (error) {
-        console.error('Submission error full:', error);
-        console.error('Submission error message:', error.message);
-        console.error('Submission error stack:', error.stack);
-        console.error('Request body:', req.body);
-        console.error('Request files:', req.files);
-
+        console.error('SERVER ERROR:', error);
         res.status(500).json({
             error: 'Submission failed',
-            message: error.message,
-            stack: error.stack
-        });
-    }
-});
-
-// API Route to fetch all submissions
-app.get('/api/submissions', async (req, res) => {
-    try {
-        const submissions = await Submission.find().sort({ timestamp: -1 });
-        res.status(200).json(submissions);
-    } catch (error) {
-        console.error('Database fetch error:', error);
-        res.status(500).json({
-            error: 'Failed to fetch submissions from database.',
-            message: error.message
-        });
-    }
-});
-
-// API Route to fetch submissions by user email
-app.get('/api/submissions/user/:email', async (req, res) => {
-    try {
-        const email = req.params.email;
-        const submissions = await Submission.find({ userEmail: email }).sort({ timestamp: -1 });
-        res.status(200).json(submissions);
-    } catch (error) {
-        console.error('Database fetch error:', error);
-        res.status(500).json({
-            error: 'Failed to fetch user submissions.',
             message: error.message
         });
     }
@@ -155,20 +94,17 @@ app.get('/api/submissions/user/:email', async (req, res) => {
 
 // Test route
 app.get('/', (req, res) => {
-    res.send('Backend is running');
+    res.send('Backend is running smoothly!');
 });
 
-// Global error handler
-app.use((err, req, res, next) => {
-    console.error('Global server error:', err);
-    res.status(500).json({
-        error: 'Global server error',
-        message: err.message,
-        stack: err.stack
+// MongoDB Connection and Server Start
+mongoose.connect(mongoUri)
+    .then(() => {
+        console.log('Connected to MongoDB Atlas');
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+        });
+    })
+    .catch(err => {
+        console.error('Database connection error:', err);
     });
-});
-
-// Start server
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
