@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Signal, Wifi, Battery, ChevronDown, Home, User, Upload, FileText, Check, ChevronLeft, Search, PlusSquare } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const translations = {
     en: {
@@ -66,6 +68,8 @@ const API_BASE_URL = 'https://twilight-armstrong.onrender.com';
 
 const MobileWizardPage = () => {
     const [step, setStep] = useState(2);
+    const { user } = useAuth();
+    const navigate = useNavigate();
     const [lang, setLang] = useState('de');
     const t = translations[lang];
 
@@ -117,6 +121,7 @@ const MobileWizardPage = () => {
 
         if (files.energie) submitData.append('energie', files.energie);
         if (files.heizung) submitData.append('heizung', files.heizung);
+        if (user && user.email) submitData.append('userEmail', user.email);
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/submissions`, {
@@ -155,7 +160,7 @@ const MobileWizardPage = () => {
                 <div className="w-full h-[44px] flex items-center justify-between px-4 shrink-0 bg-white border-b border-gray-200 relative z-10">
                     <button
                         className="p-1 hover:bg-gray-50 rounded-full"
-                        onClick={() => step > 2 ? setStep(step - 1) : null}
+                        onClick={() => step > 2 ? setStep(step - 1) : navigate('/customer-dashboard')}
                     >
                         <ChevronLeft size={28} className="text-black" />
                     </button>

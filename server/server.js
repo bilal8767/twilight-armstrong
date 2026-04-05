@@ -47,6 +47,7 @@ startServer();
 
 // Mongoose Schema
 const submissionSchema = new mongoose.Schema({
+    userEmail: String,
     name: String,
     address: String,
     propertyType: String,
@@ -85,12 +86,13 @@ app.post('/api/submissions', upload.fields([
         console.log('Incoming submission body:', req.body);
         console.log('Incoming submission files:', req.files);
 
-        const { name, address, propertyDetails, property } = req.body;
+        const { userEmail, name, address, propertyDetails, property } = req.body;
 
         const energiePath = req.files?.energie ? req.files.energie[0].path : null;
         const heizungPath = req.files?.heizung ? req.files.heizung[0].path : null;
 
         const newSubmission = new Submission({
+            userEmail,
             name,
             address,
             propertyType: propertyDetails,
@@ -130,6 +132,21 @@ app.get('/api/submissions', async (req, res) => {
         console.error('Database fetch error:', error);
         res.status(500).json({
             error: 'Failed to fetch submissions from database.',
+            message: error.message
+        });
+    }
+});
+
+// API Route to fetch submissions by user email
+app.get('/api/submissions/user/:email', async (req, res) => {
+    try {
+        const email = req.params.email;
+        const submissions = await Submission.find({ userEmail: email }).sort({ timestamp: -1 });
+        res.status(200).json(submissions);
+    } catch (error) {
+        console.error('Database fetch error:', error);
+        res.status(500).json({
+            error: 'Failed to fetch user submissions.',
             message: error.message
         });
     }

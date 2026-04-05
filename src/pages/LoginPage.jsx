@@ -27,7 +27,7 @@ const LoginPage = () => {
                     setError('Administrators must use the dedicated Admin Portal to log in.');
                     logout();
                 } else {
-                    navigate('/wizard');
+                    navigate('/customer-dashboard');
                 }
             } else {
                 setError(res.message || 'Failed to sign in');

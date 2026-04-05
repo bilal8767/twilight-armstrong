@@ -21,6 +21,7 @@ import DashboardPage from './pages/DashboardPage';
 import ModulesPage from './pages/ModulesPage';
 import ModuleDetailsPage from './pages/ModuleDetailsPage';
 import ModuleFormPage from './pages/ModuleFormPage';
+import CustomerDashboardPage from './pages/CustomerDashboardPage';
 
 
 // Protected Route Component (For Normal Users)
@@ -73,6 +74,12 @@ const App = () => {
           </Route>
 
           {/* Protected Routes */}
+          <Route path="/customer-dashboard" element={
+            <ProtectedRoute>
+              <CustomerDashboardPage />
+            </ProtectedRoute>
+          } />
+          
           <Route path="/wizard" element={
             <ProtectedRoute>
               <MobileWizardPage />
