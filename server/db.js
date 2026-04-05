@@ -1,31 +1,17 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
+const mongoose = require('mongoose');
 
-const dbPath = path.resolve(__dirname, 'database.sqlite');
-const db = new sqlite3.Database(dbPath, (err) => {
-    if (err) {
-        console.error('Error opening database', err.message);
-    } else {
-        console.log('Connected to the SQLite database.');
-        
-        // Create table if it doesn't exist
-        db.run(`CREATE TABLE IF NOT EXISTS submissions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            address TEXT,
-            propertyType TEXT,
-            propertyName TEXT,
-            energieausweisPath TEXT,
-            heizungsbauerPath TEXT,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`, (err) => {
-            if (err) {
-                console.error("Error creating table", err.message);
-            } else {
-                console.log("Submissions table ready.");
-            }
-        });
-    }
-});
+// Render par hum MONGO_URI set karenge
+const mongoUri = process.env.MONGO_URI || process.env.MONGODB_URI;
 
-module.exports = db;
+if (!mongoUri) {
+    console.error('ERROR: MongoDB Connection String missing in Environment Variables!');
+}
+
+mongoose.connect(mongoUri)
+    .then(() => console.log('✅ Connected to MongoDB Atlas successfully!'))
+    .catch(err => {
+        console.error('❌ MongoDB Connection Error:', err.message);
+        process.exit(1); // Server stop kar do agar DB connect na ho
+    });
+
+module.exports = mongoose.connection;

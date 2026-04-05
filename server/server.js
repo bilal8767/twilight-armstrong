@@ -6,15 +6,15 @@ const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
+// DB Connection Import
+require('./db');
+
 const app = express();
-const PORT = process.env.PORT || 10000; // Render usually uses 10000
+const PORT = process.env.PORT || 10000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
-
-// MongoDB Connection
-const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
 
 // Mongoose Schema
 const submissionSchema = new mongoose.Schema({
@@ -43,25 +43,20 @@ const storage = new CloudinaryStorage({
     params: {
         folder: 'ml_uploads',
         allowed_formats: ['jpg', 'png', 'jpeg', 'pdf'],
-        // Agar aapne preset banaya hai to niche wali line uncomment karein, 
-        // warna default settings hi kafi hain.
-        // upload_preset: 'ml_uploads', 
     },
 });
 
 const upload = multer({ storage });
 
-// API Route to handle form submission
+// API Route - Form Submission
 app.post('/api/submissions', upload.fields([
     { name: 'energie', maxCount: 1 },
     { name: 'heizung', maxCount: 1 }
 ]), async (req, res) => {
     try {
-        console.log('Data received:', req.body);
-
+        console.log('Body:', req.body);
         const { userEmail, name, address, propertyDetails, property } = req.body;
 
-        // Cloudinary se jo URLs milay hain unhein extract karna
         const energiePath = req.files?.energie ? req.files.energie[0].path : null;
         const heizungPath = req.files?.heizung ? req.files.heizung[0].path : null;
 
@@ -76,35 +71,18 @@ app.post('/api/submissions', upload.fields([
         });
 
         const saved = await newSubmission.save();
-        console.log('Saved to DB:', saved._id);
-
-        res.status(201).json({
-            message: 'Submission saved successfully!',
-            submissionId: saved._id
-        });
+        res.status(201).json({ message: 'Success!', id: saved._id });
 
     } catch (error) {
-        console.error('SERVER ERROR:', error);
-        res.status(500).json({
-            error: 'Submission failed',
-            message: error.message
-        });
+        console.error('Submission Error:', error.message);
+        res.status(500).json({ error: 'Global server error', message: error.message });
     }
 });
 
 // Test route
-app.get('/', (req, res) => {
-    res.send('Backend is running smoothly!');
-});
+app.get('/', (req, res) => res.send('Backend is running!'));
 
-// MongoDB Connection and Server Start
-mongoose.connect(mongoUri)
-    .then(() => {
-        console.log('Connected to MongoDB Atlas');
-        app.listen(PORT, () => {
-            console.log(`Server running on port ${PORT}`);
-        });
-    })
-    .catch(err => {
-        console.error('Database connection error:', err);
-    });
+// Start Server
+app.listen(PORT, () => {
+    console.log(`🚀 Server is running on port ${PORT}`);
+});
