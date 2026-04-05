@@ -14,8 +14,9 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
-if (process.env.MONGODB_URI) {
-  mongoose.connect(process.env.MONGODB_URI)
+const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
+if (mongoUri) {
+  mongoose.connect(mongoUri)
     .then(() => console.log('Connected to MongoDB Atlas'))
     .catch(err => console.error('MongoDB connection error:', err));
 }
@@ -47,7 +48,8 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
-        folder: 'mobile_wizard_uploads',
+        folder: 'submissions',
+        upload_preset: 'submissions',
         allowed_formats: ['jpg', 'png', 'jpeg', 'pdf'],
     },
 });

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Wrench, MapPin, CheckCircle, FileText, ChevronRight, Phone } from 'lucide-react';
+import { LogOut, Wrench, MapPin, CheckCircle, FileText, ChevronRight, Phone, Download } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const PlumberDashboardPage = () => {
@@ -79,14 +79,16 @@ const PlumberDashboardPage = () => {
                 <div className="job-list">
                     {jobs.map((job, idx) => (
                         <div key={idx} className="job-card">
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
                                 <div style={{ width: '3rem', height: '3rem', backgroundColor: '#f8fafc', borderRadius: '0.5rem', border: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <FileText size={20} color="#94a3b8" />
                                 </div>
                                 <div>
-                                    <h4 style={{ fontSize: '0.875rem', fontWeight: 'bold', color: '#0f172a' }}>
+                                    <h4 style={{ fontSize: '0.875rem', fontWeight: 'bold', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                         {job.name || 'Unknown Customer'}
+                                        {job.propertyType && <span style={{ fontWeight: '600', color: '#3b82f6', background: '#eff6ff', padding: '0.1rem 0.4rem', borderRadius: '1rem', fontSize: '0.65rem', textTransform: 'uppercase' }}>{job.propertyType}</span>}
                                     </h4>
+                                    {job.propertyName && <p style={{ fontSize: '0.75rem', color: '#0f172a', fontWeight: '500', marginTop: '0.125rem' }}>{job.propertyName}</p>}
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.125rem' }}>
                                         <Phone size={12} color="#64748b" />
                                         <p style={{ fontSize: '0.75rem', color: '#64748b', margin: 0 }}>{job.phoneNumber || 'No phone number'}</p>
@@ -95,8 +97,12 @@ const PlumberDashboardPage = () => {
                                     <p style={{ fontSize: '0.75rem', fontWeight: '600', color: '#f97316', marginTop: '0.25rem' }}>{new Date(job.timestamp).toLocaleDateString()}</p>
                                 </div>
                             </div>
-                            <div className="icon-btn">
-                                <ChevronRight size={16} />
+                            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                {job.energieausweisPath && <a href={job.energieausweisPath} target="_blank" rel="noreferrer" title="Energieausweis" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '2rem', height: '2rem', borderRadius: '50%', color: '#3b82f6', background: '#eff6ff', border: '1px solid #bfdbfe' }}><FileText size={14} /></a>}
+                                {job.heizungsbauerPath && <a href={job.heizungsbauerPath} target="_blank" rel="noreferrer" title="Heizungsbauer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '2rem', height: '2rem', borderRadius: '50%', color: '#f97316', background: '#fff7ed', border: '1px solid #ffedd5' }}><Download size={14} /></a>}
+                                <button className="icon-btn" style={{ marginLeft: '0.5rem' }}>
+                                    <ChevronRight size={16} />
+                                </button>
                             </div>
                         </div>
                     ))}

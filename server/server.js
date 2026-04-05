@@ -70,7 +70,8 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
-        folder: 'mobile_wizard_uploads',
+        folder: 'submissions',
+        upload_preset: 'submissions',
         allowed_formats: ['jpg', 'png', 'jpeg', 'pdf'],
     },
 });
